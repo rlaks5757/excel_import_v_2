@@ -13,6 +13,7 @@ const FixedTableContents = ({
   step,
   height,
   width,
+  detailFormBoolean,
 }) => {
   const [upper_table_data, set_upper_table_data] = useState({
     header: [],
@@ -98,7 +99,7 @@ const FixedTableContents = ({
         body: detail_table_data_add,
       }));
     }
-  }, []);
+  }, [detailFormBoolean]);
 
   useEffect(() => {
     const matching_complete_check = detail_table_data.body.filter(

@@ -13,6 +13,7 @@ const MatchingTableHeader = ({
   step,
   height,
   width,
+  detailFormBoolean,
 }) => {
   const [selectBPToggle, setSelectBPToggle] = useState(true);
   const [selectBPData, setSelectBPData] = useState({
@@ -36,17 +37,36 @@ const MatchingTableHeader = ({
       (com) => com.label_name !== "" && com.required
     );
 
-    if (
-      selectBPData_upper_list.filter((com) => com.required).length <=
-        upper_form_matching_header.length &&
-      selectBPData_detail_list.filter((com) => com.required).length <=
-        detail_form_matching_header.length
-    ) {
-      setStepBoolean((prev) => ({ ...prev, [step]: true }));
+    if (detailFormBoolean) {
+      if (
+        selectBPData_upper_list.filter((com) => com.required).length <=
+          upper_form_matching_header.length &&
+        selectBPData_detail_list.filter((com) => com.required).length <=
+          detail_form_matching_header.length
+      ) {
+        setStepBoolean((prev) => ({ ...prev, [step]: true }));
+      } else {
+        setStepBoolean((prev) => ({ ...prev, [step]: false }));
+      }
     } else {
-      setStepBoolean((prev) => ({ ...prev, [step]: false }));
+      if (
+        selectBPData_upper_list.filter((com) => com.required).length <=
+        upper_form_matching_header.length
+      ) {
+        setDetailFormSheet((prev) => ({
+          ...prev,
+          matching_data: selectBPData_detail_list,
+        }));
+        setStepBoolean((prev) => ({ ...prev, [step]: true }));
+      } else {
+        setDetailFormSheet((prev) => ({
+          ...prev,
+          matching_data: [],
+        }));
+        setStepBoolean((prev) => ({ ...prev, [step]: false }));
+      }
     }
-  }, [upperFormSheet, detailFormSheet, step, selectBPData]);
+  }, [upperFormSheet, detailFormSheet, step, selectBPData, detailFormBoolean]);
 
   return (
     <MatchingTableHeaderDiv>
@@ -76,22 +96,26 @@ const MatchingTableHeader = ({
           },
         ]}
       >
-        <GridLayoutItem row={1} col={1}>
+        <GridLayoutItem row={1} col={1} colSpan={detailFormBoolean ? 1 : 2}>
           <MatchingTableHeaderComponents
             selectBPData={selectBPData}
             formType={"upper_form"}
             formSheet={upperFormSheet}
             setFormSheet={setUpperFormSheet}
+            detailFormBoolean={detailFormBoolean}
           />
         </GridLayoutItem>
-        <GridLayoutItem row={1} col={2}>
-          <MatchingTableHeaderComponents
-            selectBPData={selectBPData}
-            formType={"line_item"}
-            formSheet={detailFormSheet}
-            setFormSheet={setDetailFormSheet}
-          />
-        </GridLayoutItem>
+        {detailFormBoolean && (
+          <GridLayoutItem row={1} col={2}>
+            <MatchingTableHeaderComponents
+              selectBPData={selectBPData}
+              formType={"line_item"}
+              formSheet={detailFormSheet}
+              setFormSheet={setDetailFormSheet}
+              detailFormBoolean={detailFormBoolean}
+            />
+          </GridLayoutItem>
+        )}
       </GridLayout>
     </MatchingTableHeaderDiv>
   );

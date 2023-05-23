@@ -24,7 +24,7 @@ const NewUpload = ({ height, width }) => {
   const [xlsxData, setXlsxData] = useState([]);
   const [upperFormSheet, setUpperFormSheet] = useState(reset_obj);
   const [detailFormSheet, setDetailFormSheet] = useState(reset_obj);
-  const [detailFormBoolean, setDetailFormBoolean] = useState(false);
+  const [detailFormBoolean, setDetailFormBoolean] = useState(true);
   const [finaluploadData, setFinalUploadData] = useState([]);
   const [errorBoolean, setErrorBoolean] = useState(false);
   const [errorMessage, setErrorMessage] = useState([]);
@@ -35,18 +35,7 @@ const NewUpload = ({ height, width }) => {
         return (
           <>
             {xlsxData.length === 0 ? (
-              <div style={{ display: "flex", height: "100%" }}>
-                <FileAttachment setXlsxData={setXlsxData} />
-                {/* <div
-                  style={{
-                    display: "flex",
-                    width: "300px",
-                    margin: "20px",
-                  }}
-                >
-                  Templeate File Download
-                </div> */}
-              </div>
+              <FileAttachment setXlsxData={setXlsxData} />
             ) : (
               <SelectHeaderPoint
                 xlsxData={xlsxData}
@@ -76,6 +65,7 @@ const NewUpload = ({ height, width }) => {
             step={step}
             height={height - 109 - 12}
             width={width}
+            detailFormBoolean={detailFormBoolean}
           />
         );
 
@@ -90,6 +80,7 @@ const NewUpload = ({ height, width }) => {
             step={step}
             height={height - 109 - 12}
             width={width}
+            detailFormBoolean={detailFormBoolean}
           />
         );
 
@@ -107,7 +98,15 @@ const NewUpload = ({ height, width }) => {
       default:
         return "";
     }
-  }, [step, xlsxData, height, width, upperFormSheet, detailFormSheet]);
+  }, [
+    step,
+    xlsxData,
+    height,
+    width,
+    upperFormSheet,
+    detailFormSheet,
+    detailFormBoolean,
+  ]);
 
   const handleImportStep = (type) => {
     if (type === "next") {

@@ -43,6 +43,7 @@ const SelectHeaderPoint = ({
         if (detailFormSheet.name === value) {
           setDetailFormSheet(reset_obj);
         }
+
         setUpperFormSheet((prev) => ({
           ...prev,
           name: value,
@@ -104,12 +105,23 @@ const SelectHeaderPoint = ({
   };
 
   useEffect(() => {
-    if (upperFormSheet.header.length > 0 && detailFormSheet.header.length > 0) {
-      setStepBoolean((prev) => ({ ...prev, [step]: true }));
+    if (detailFormBoolean) {
+      if (
+        upperFormSheet.header.length > 0 &&
+        detailFormSheet.header.length > 0
+      ) {
+        setStepBoolean((prev) => ({ ...prev, [step]: true }));
+      } else {
+        setStepBoolean((prev) => ({ ...prev, [step]: false }));
+      }
     } else {
-      setStepBoolean((prev) => ({ ...prev, [step]: false }));
+      if (upperFormSheet.header.length > 0) {
+        setStepBoolean((prev) => ({ ...prev, [step]: true }));
+      } else {
+        setStepBoolean((prev) => ({ ...prev, [step]: false }));
+      }
     }
-  }, [upperFormSheet, detailFormSheet, step]);
+  }, [upperFormSheet, detailFormSheet, detailFormBoolean, step]);
 
   const handleFieldLabel = (arr) => {
     const create_label = arr.map((com, idx) => {
@@ -121,6 +133,15 @@ const SelectHeaderPoint = ({
     });
 
     return <RadioFieldLabel>{create_label}</RadioFieldLabel>;
+  };
+
+  const handle_detail_use = () => {
+    if (detailFormBoolean) {
+      setDetailFormBoolean(false);
+      setDetailFormSheet(reset_obj);
+    } else {
+      setDetailFormBoolean(true);
+    }
   };
 
   return (
@@ -135,10 +156,7 @@ const SelectHeaderPoint = ({
             height: 120,
           },
           {
-            height: height - 120 - 6 - 45,
-          },
-          {
-            height: 35,
+            height: height - 120 - 6,
           },
         ]}
         cols={[
@@ -170,12 +188,7 @@ const SelectHeaderPoint = ({
             />
           </FormControl>
         </GridLayoutItem>
-        <GridLayoutItem
-          col={1}
-          row={2}
-          rowSpan={2}
-          className="selectHeaderPointBody"
-        >
+        <GridLayoutItem col={1} row={2} className="selectHeaderPointBody">
           <FormControl>
             <FormLabel
               id="demo-radio-buttons-group-label"
@@ -214,9 +227,23 @@ const SelectHeaderPoint = ({
             >
               Detail Form(Line Item)으로 사용할 시트를 선택하여 주시기 바랍니다.
             </FormLabel>
+            <RadioGroup
+              aria-labelledby="demo-radio-buttons-group-label"
+              name="radio-buttons-group"
+            >
+              <FormControlLabel
+                control={
+                  <Radio
+                    checked={detailFormBoolean}
+                    onClick={() => handle_detail_use()}
+                  />
+                }
+                label={"Detail Form(Line Item)을 사용하시겠습니까?"}
+              />
+            </RadioGroup>
+
             <ComboBox
               style={{
-                marginTop: "10px",
                 width: (width - 5) * 0.4,
               }}
               value={detailFormSheet.name}
@@ -257,9 +284,11 @@ const SelectHeaderPoint = ({
             </RadioGroup>
           </FormControl>
         </GridLayoutItem>
-        <GridLayoutItem row={3} col={2} className="selectHeaderPointBody">
-          <div>asdf</div>
-        </GridLayoutItem>
+        <GridLayoutItem
+          row={3}
+          col={2}
+          className="selectHeaderPointBody"
+        ></GridLayoutItem>
       </GridLayout>
     </SelectHeaderPointDiv>
   );

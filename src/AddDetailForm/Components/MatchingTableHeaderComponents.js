@@ -16,6 +16,7 @@ const MatchingTableHeaderComponents = ({
   formType,
   formSheet,
   setFormSheet,
+  detailFormBoolean,
 }) => {
   const [upper_form_use_checking, set_upper_form_use_checking] = useState([]);
 
@@ -110,6 +111,18 @@ const MatchingTableHeaderComponents = ({
     setFormSheet((prev) => ({ ...prev, matching_data }));
   };
 
+  const handle_list = () => {
+    if (formType === "upper_form") {
+      return true;
+    } else {
+      if (detailFormBoolean) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+
   return (
     <MatchingTableHeaderDiv>
       <RequiredHeaderListBox>
@@ -124,7 +137,8 @@ const MatchingTableHeaderComponents = ({
         </FormControl>
 
         <Stack direction="row" spacing={3}>
-          {upper_form_use_checking.length > 0 &&
+          {handle_list() &&
+            upper_form_use_checking.length > 0 &&
             upper_form_use_checking.map((com, idx) => {
               const { label_name, required, using } = com;
               return (
@@ -148,52 +162,56 @@ const MatchingTableHeaderComponents = ({
             아래의 Table에서 Header를 Mapping하여 주시기 바랍니다.
           </FormLabel>
         </FormControl>
-        <HeaderMappingTable>
-          <thead>
-            <tr>
-              {formSheet.matching_data.map((com, idx) => {
+        {handle_list() && (
+          <HeaderMappingTable>
+            <thead>
+              <tr>
+                {formSheet.matching_data.map((com, idx) => {
+                  return (
+                    <HeaderMappingTableTh key={idx}>
+                      <Select
+                        id="demo-simple-select"
+                        value={com.label_name}
+                        onChange={(e) => handleChange(idx, e)}
+                        sx={{ width: "200px", textAlign: "left" }}
+                        endAdornment={
+                          <IconButton
+                            onClick={() => clear_matching_header(idx)}
+                          >
+                            <ClearIcon />
+                          </IconButton>
+                        }
+                      >
+                        {upper_form_use_checking.map((com2, idx) => (
+                          <MenuItem value={com2.label_name} key={idx}>
+                            {com2.label_name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </HeaderMappingTableTh>
+                  );
+                })}
+              </tr>
+            </thead>
+            <tbody>
+              {formSheet.body.map((com, idx) => {
                 return (
-                  <HeaderMappingTableTh key={idx}>
-                    <Select
-                      id="demo-simple-select"
-                      value={com.label_name}
-                      onChange={(e) => handleChange(idx, e)}
-                      sx={{ width: "200px", textAlign: "left" }}
-                      endAdornment={
-                        <IconButton onClick={() => clear_matching_header(idx)}>
-                          <ClearIcon />
-                        </IconButton>
-                      }
-                    >
-                      {upper_form_use_checking.map((com2, idx) => (
-                        <MenuItem value={com2.label_name} key={idx}>
-                          {com2.label_name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </HeaderMappingTableTh>
+                  <tr key={idx}>
+                    {com.map((com2, idx2) => {
+                      return (
+                        <HeaderMappingTableTd key={`${idx}_${idx2}`}>
+                          <HeaderMappingTableContents>
+                            {com2}
+                          </HeaderMappingTableContents>
+                        </HeaderMappingTableTd>
+                      );
+                    })}
+                  </tr>
                 );
               })}
-            </tr>
-          </thead>
-          <tbody>
-            {formSheet.body.map((com, idx) => {
-              return (
-                <tr key={idx}>
-                  {com.map((com2, idx2) => {
-                    return (
-                      <HeaderMappingTableTd key={`${idx}_${idx2}`}>
-                        <HeaderMappingTableContents>
-                          {com2}
-                        </HeaderMappingTableContents>
-                      </HeaderMappingTableTd>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </HeaderMappingTable>
+            </tbody>
+          </HeaderMappingTable>
+        )}
       </HeaderMappingDiv>
     </MatchingTableHeaderDiv>
   );
