@@ -1,0 +1,14 @@
+.stepperComponent {
+  .k-step-list-horizontal .k-step-link {
+    margin: auto 20px;
+    max-width: 100em;
+  }
+
+  .k-step-label {
+    max-width: clamp(100%, 100em, 100%) !important;
+
+    .k-step-text {
+      max-width: calc(100em - 20px) !important;
+    }
+  }
+}
